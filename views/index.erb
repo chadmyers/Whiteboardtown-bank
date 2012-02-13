@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Whiteboard Town Bank</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript">
+    $(document).ready(function(){
+      $("#amount").focus();
+    });
+	</script>
+</head>
+<body>
+	<h1>Whiteboard Town Bank</h1>
+	<br/>
+	
+	<ul>
+    <% @keys.each do |key| %>
+    <li><%= h key %> - $<%= @accounts[key] %></li>
+    <% end %>
+	</ul>
+	
+	<hr/>
+	
+	<form action="add" method="post">
+	Add to account: 
+   <select id="account" name="account">
+	<% @keys.each do |key| %>
+    <option><%= h key %></option>
+	<% end %>
+	</select>
+	<input id="amount" type="number" value="10" name="amount" required/>
+	<input type="submit" value="Add to Account">
+	</form>
+</body>
+</html>
