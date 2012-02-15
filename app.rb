@@ -17,14 +17,18 @@ helpers do
 end
 
 get '/clear' do
-  REDIS.set(:acounts, default_json)
+  erb :clearconfirm
+end
+
+post '/clear' do
+  REDIS.set(:acounts, default_json) if params[:password] == "yesclear"
   redirect '/'
 end
 
 get '/' do
   json = REDIS.get(:acounts) || default_json
   @accounts = JSON.parse(json)
-  @keys = @accounts.keys.sort
+  @names = @accounts.keys.sort
   erb :index
 end
 
@@ -32,9 +36,12 @@ post '/add' do
   json = REDIS.get(:acounts) || default_json
   accounts = JSON.parse(json)
   account = params[:account]
-  amount = params[:amount].to_i
-  balance = accounts[account].to_i
+  amount = params[:amount].to_i  
+  balance = accounts[account].to_i  
   balance = balance + amount
+  if( balance < 0 ) then 
+    balance = 0
+  end
   accounts[account] = balance
   new_json = JSON.generate accounts
   REDIS.set(:acounts, new_json)
@@ -42,6 +49,30 @@ post '/add' do
 end
 
 post '/transfer' do
+  json = REDIS.get(:acounts) || default_json
+  accounts = JSON.parse(json)
+  from_account = params[:from]
+  to_account = params[:to]
+  
+  unless (from_account == to_account) then  
+    amount = params[:amount].to_i
+    from_balance = accounts[from_account].to_i
+    to_balance = accounts[to_account].to_i
+    
+    amount = from_balance if from_balance < amount
+    
+    from_balance -= amount
+    to_balance += amount
+      
+    accounts[from_account] = from_balance
+    accounts[to_account] = to_balance
+    
+    new_json = JSON.generate accounts
+    REDIS.set(:acounts, new_json)
+  end
+  
+  redirect '/'
+  
 end
 
 post '/subtract' do

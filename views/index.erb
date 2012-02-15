@@ -14,22 +14,43 @@
 	<br/>
 	
 	<ul>
-    <% @keys.each do |key| %>
-    <li><%= h key %> - $<%= @accounts[key] %></li>
+    <% @names.each do |name| %>
+    <li><%= h name %> - $<%= @accounts[name] %></li>
     <% end %>
 	</ul>
 	
 	<hr/>
 	
-	<form action="add" method="post">
-	Add to account: 
-   <select id="account" name="account">
-	<% @keys.each do |key| %>
-    <option><%= h key %></option>
-	<% end %>
-	</select>
-	<input id="amount" type="number" value="10" name="amount" required/>
-	<input type="submit" value="Add to Account">
-	</form>
+	<div class="action-areas">
+    <form action="add" method="post">
+      Credit or Debit account: 
+      <select id="account" name="account">
+      <% @names.each do |name| %>
+        <option><%= h name %></option>
+      <% end %>
+      </select>
+      <input id="amount" type="number" value="10" name="amount" required/>
+      <input type="submit" value="Add to Account">
+    </form>
+    
+    <form action="transfer" method="post">
+      Transfer from account  
+      <select id="from" name="from">
+      <% @names.each do |name| %>
+        <option><%= h name %></option>
+      <% end %>
+      </select>
+      to account 
+      <select id="to" name="to">
+      <% @names.each do |name| %>
+        <option><%= h name %></option>
+      <% end %>
+      </select>
+      <input id="amount" type="number" value="10" name="amount" required/>
+      <input type="submit" value="Transfer Money">
+    </form>
+	</div>
+	<a href="clear">Reset accounts</a> (you will be prompted to confirm)
+	
 </body>
 </html>
